@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -47,7 +49,7 @@ namespace Utils.ConvertHelper
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static string ConvertToUnSign1(this string s)
+        public static string Convert2UnSign(this string s)
         {
             Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
             string temp = s.Normalize(NormalizationForm.FormD);
@@ -65,7 +67,7 @@ namespace Utils.ConvertHelper
             List<T> data = new List<T>();
             foreach (DataRow row in dt.Rows)
             {
-                T item = row.GetItem<T>();
+                T item = row.ConvertDataRowToObject<T>();
                 data.Add(item);
             }
             return data;
@@ -77,7 +79,7 @@ namespace Utils.ConvertHelper
         /// <typeparam name="T"></typeparam>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public static T GetItem<T>(this DataRow dr)
+        public static T ConvertDataRowToObject<T>(this DataRow dr)
         {
             Type temp = typeof(T);
             T obj = Activator.CreateInstance<T>();
@@ -93,6 +95,141 @@ namespace Utils.ConvertHelper
                 }
             }
             return obj;
+        }
+
+        /// <summary>
+        /// hex string to decimal number
+        /// </summary>
+        /// <param name="hexString"></param>
+        /// <returns></returns>
+        public static int ToDecimalNumber(this string hexString)
+        {
+            return int.Parse(hexString, System.Globalization.NumberStyles.HexNumber);
+        }
+
+        /// <summary>
+        /// decimal value to hex string
+        /// </summary>
+        /// <param name="decimalValue"></param>
+        /// <returns></returns>
+        public static string ToHexString(this int decimalValue)
+        {
+          return decimalValue.ToString("X");
+        }
+
+        private const uint LOCALE_SYSTEM_DEFAULT = 0x0800;
+        private const uint LCMAP_HALFWIDTH = 0x00400000;
+        private const uint LCMAP_FULLWIDTH = 0x00800000;
+
+        /// <summary>
+        /// FullWidth to HalfWidth
+        /// </summary>
+        /// <param name="fullWidth"></param>
+        /// <returns></returns>
+        public static string ToHalfWidth(string fullWidth)
+        {
+            StringBuilder sb = new StringBuilder(256);
+            LCMapString(LOCALE_SYSTEM_DEFAULT, LCMAP_HALFWIDTH, fullWidth, -1, sb, sb.Capacity);
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// HalfWidth to FullWidth
+        /// </summary>
+        /// <param name="halfWidth"></param>
+        /// <returns></returns>
+        public static string ToFullWidth(string halfWidth)
+        {
+            StringBuilder sb = new StringBuilder(256);
+            LCMapString(LOCALE_SYSTEM_DEFAULT, LCMAP_FULLWIDTH, halfWidth, -1, sb, sb.Capacity);
+            return sb.ToString();
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern int LCMapString(uint Locale, uint dwMapFlags, string lpSrcStr, int cchSrc, StringBuilder lpDestStr, int cchDest);
+        
+        /// <summary>
+        /// String Is Valid Url format
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsValidUrl(this string input)
+        {
+            Regex regex = new Regex("/^http(s)?:\\/\\/([\\w-]+\\.)+[\\w-]+(\\/[\\w-.\\/?%&=]*)?/");
+            return regex.IsMatch(input);
+        }
+
+        /// <summary>
+        /// Check Is Only Kanji
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsOnlyKanji(this string input)
+        {
+            Regex regex = new Regex("/^[一-龥]+$/");
+            return regex.IsMatch(input);
+        }
+
+        /// <summary>
+        /// Check Is Only Hiragana FullWidth
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsOnlyHiraganaFullWidth(this string input)
+        {
+            Regex regex = new Regex("/^[ぁ-ん]+$/");
+            return regex.IsMatch(input);
+        }
+
+        /// <summary>
+        /// Check Is Only Katakana FullWidth
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsOnlyKatakanaFullWidth(this string input)
+        {
+            Regex regex = new Regex("/^([ァ-ン]|ー)+$/");
+            return regex.IsMatch(input);
+        }
+
+        /// <summary>
+        /// Check Is Valid Email
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsValidEmail(this string input)
+        {
+            Regex regex = new Regex("/^\\S+@\\S+\\.\\S+$/");
+            return regex.IsMatch(input);
+        }
+
+        /// <summary>
+        /// Convert to seo friendly url (slug)
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static string ToSlugUrl(this string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                throw new ArgumentNullException("input");
+            }
+
+            var stringBuilder = new StringBuilder();
+            foreach (char c in input.ToArray())
+            {
+                if (Char.IsLetterOrDigit(c))
+                {
+                    stringBuilder.Append(c);
+                }
+                else if (c == ' ')
+                {
+                    stringBuilder.Append("-");
+                }
+            }
+
+            return stringBuilder.ToString().ToLower();
         }
     }
 }
