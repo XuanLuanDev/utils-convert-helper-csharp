@@ -1,6 +1,6 @@
 # utils-convert-helper-csharp
-This library contains extension functions to make your programming easier
-List method of this library:
+This library contains extension functions to make your programming easier.\
+List method of this library:\
 1. ToCamelCase
 2. ConvertToUnSign
 3. Convert2UnSign
