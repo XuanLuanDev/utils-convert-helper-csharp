@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -230,6 +231,86 @@ namespace Utils.ConvertHelper
             }
 
             return stringBuilder.ToString().ToLower();
+        }
+
+        /// <summary>
+        /// Get First Day Of Week
+        /// </summary>
+        /// <param name="dayInWeek"></param>
+        /// <returns></returns>
+        public static DateTime FirstDayOfWeek(this DateTime dayInWeek)
+        {
+            CultureInfo defaultCultureInfo = CultureInfo.CurrentCulture;
+            return dayInWeek.FirstDayOfWeek(defaultCultureInfo);
+        }
+
+        /// <summary>
+        /// Get First Day Of Week
+        /// </summary>
+        /// <param name="dayInWeek"></param>
+        /// <param name="cultureInfo"></param>
+        /// <returns></returns>
+        public static DateTime FirstDayOfWeek(this DateTime dayInWeek, CultureInfo cultureInfo)
+        {
+            DayOfWeek firstDay = cultureInfo.DateTimeFormat.FirstDayOfWeek;
+            DateTime firstDayInWeek = dayInWeek.Date;
+
+            while (firstDayInWeek.DayOfWeek != firstDay)
+            {
+                firstDayInWeek = firstDayInWeek.AddDays(-1);
+            }
+
+            return firstDayInWeek;
+        }
+
+        /// <summary>
+        /// Get Last Day Of Week
+        /// </summary>
+        /// <param name="dayInWeek"></param>
+        /// <returns></returns>
+        public static DateTime LastDayOfWeek(this DateTime dayInWeek)
+        {
+            CultureInfo defaultCultureInfo = CultureInfo.CurrentCulture;
+            return dayInWeek.LastDayOfWeek(defaultCultureInfo);
+        }
+
+        /// <summary>
+        ///  Get Last Day Of Week
+        /// </summary>
+        /// <param name="dayInWeek"></param>
+        /// <param name="cultureInfo"></param>
+        /// <returns></returns>
+        public static DateTime LastDayOfWeek(this DateTime dayInWeek, CultureInfo cultureInfo)
+        {
+            DateTime firstDayInWeek = dayInWeek.FirstDayOfWeek(cultureInfo);
+            return firstDayInWeek.AddDays(7);
+        }
+
+        /// <summary>
+        /// get start date of week
+        /// </summary>
+        /// <param name="dayInWeek"></param>
+        /// <param name="startOfWeek"></param>
+        /// <returns></returns>
+        public static DateTime StartOfWeek(this DateTime dayInWeek, DayOfWeek startOfWeek)
+        {
+            int diff = (7 + (dayInWeek.DayOfWeek - startOfWeek)) % 7;
+            return dayInWeek.AddDays(-1 * diff).Date;
+        }
+
+        /// <summary>
+        /// To Pascal Case
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ToPascalCase(this string input)
+        {
+            string result = string.Join("", input?.Select(c => Char.IsLetterOrDigit(c) ? c.ToString().ToLower() : "_").ToArray());
+            var arr = result?
+                .Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => $"{s.Substring(0, 1).ToUpper()}{s.Substring(1)}");
+            result = string.Join("", arr);
+            return result;
         }
     }
 }

@@ -1,6 +1,6 @@
-# utils-convert-helper-csharp
-This library contains extension functions to make your programming easier.\
-List method of this library:
+## utils-convert-helper-csharp
+This library contains extension functions to make your programming easier.
+## List method of this library:
 1. ToCamelCase
 2. ConvertToUnSign
 3. Convert2UnSign
@@ -16,3 +16,9 @@ List method of this library:
 13. IsOnlyKatakanaFullWidth
 14. IsValidEmail
 15. ToSlugUrl
+16. FirstDayOfWeek
+17. FirstDayOfWeek (with CultureInfo)
+18. LastDayOfWeek
+19. LastDayOfWeek (with CultureInfo)
+20. StartOfWeek
+21. ToPascalCase
