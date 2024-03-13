@@ -312,5 +312,52 @@ namespace Utils.ConvertHelper
             result = string.Join("", arr);
             return result;
         }
+
+        /// <summary>
+        /// split an array to 2 array
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        public static void Split<T>(T[] array, int index, out T[] first, out T[] second)
+        {
+            first = array.Take(index).ToArray();
+            second = array.Skip(index).ToArray();
+        }
+
+        /// <summary>
+        /// Split a string by substring
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="subString"></param>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        public static string[] SplitBySubstring(this string str, string subString, StringSplitOptions option = StringSplitOptions.None)
+        {
+            return str.Split(new string[] { subString }, option);
+        }
+
+        /// <summary>
+        /// split an array into small arrays
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sourceArray"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static List<T[]> SplitArray<T>(T[] sourceArray, int size)
+        {
+            var list = new List<T[]>();
+
+            for (int i = 0; i < sourceArray.Length; i += size)
+            {
+                T[] chunk = new T[Math.Min(size, sourceArray.Length - i)];
+                Array.Copy(sourceArray, i, chunk, 0, chunk.Length);
+                list.Add(chunk);
+            }
+
+            return list;
+        }
     }
 }

@@ -22,3 +22,6 @@ This library contains extension functions to make your programming easier.
 19. LastDayOfWeek (with CultureInfo)
 20. StartOfWeek
 21. ToPascalCase
+22. Split<T>
+23. SplitBySubstring
+24. SplitArray<T>
