@@ -1,12 +1,16 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Utils.ConvertHelper
 {
@@ -358,6 +362,63 @@ namespace Utils.ConvertHelper
             }
 
             return list;
+        }
+
+        /// <summary>
+        /// Deep copy object using xml serializer
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static T DeepCopyXML<T>(this T source)
+        {
+            using (var stream = new MemoryStream())
+            {
+                var serializer = new XmlSerializer(typeof(T));
+                serializer.Serialize(stream, source);
+                stream.Position = 0;
+                return (T)serializer.Deserialize(stream);
+            }
+           
+        }
+
+        /// <summary>
+        /// Deep copy object using JsonConvert
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static T DeepCopyJSON<T>(this T source)
+        {
+            var serialized = JsonConvert.SerializeObject(source);
+            return JsonConvert.DeserializeObject<T>(serialized);
+        }
+
+        /// <summary>
+        /// Clone list object (The data type of the cloneable object)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static IList<T> Clone<T>(this IList<T> source) where T : ICloneable
+        {
+            return source.Select(item => (T)item.Clone()).ToList();
+        }
+
+        /// <summary>
+        /// Serialize object to XML string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="xmlObject"></param>
+        /// <returns></returns>
+        public static string SerializeObjectToXMLString<T>(this T xmlObject)
+        {
+            StringBuilder sb = new StringBuilder();
+            XmlSerializer serializer = new XmlSerializer(xmlObject.GetType());
+            XmlWriterSettings setting = new XmlWriterSettings();
+            XmlWriter writer = XmlWriter.Create(sb, setting);
+            serializer.Serialize(writer, xmlObject);
+            return sb.ToString();
         }
     }
 }

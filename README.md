@@ -25,3 +25,7 @@ This library contains extension functions to make your programming easier.
 22. Split<T>
 23. SplitBySubstring
 24. SplitArray<T>
+25. DeepCopyXML
+26. DeepCopyJSON
+27. Clone
+28. SerializeObjectToXMLString
