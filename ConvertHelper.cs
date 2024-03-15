@@ -420,5 +420,52 @@ namespace Utils.ConvertHelper
             serializer.Serialize(writer, xmlObject);
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Split string to string array
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="seperator"></param>
+        /// <returns></returns>
+        public static string[] SplitToStringArray(this string source, char seperator)
+        {
+            if (string.IsNullOrEmpty(source))
+            {
+                return new string[0];
+            }
+
+            return (from s in source.Split(seperator)
+                    select s.Trim() into s
+                    where s != string.Empty
+                    select s).ToArray();
+        }
+
+        /// <summary>
+        /// Remove special characters
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string RemoveSpecialCharacters(this string source)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in source)
+            {
+                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_')
+                {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Remove whitespaces
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string RemoveWhitespaces(this string source)
+        {
+            return Regex.Replace(source, @"\s", string.Empty);
+        }
     }
 }

@@ -29,3 +29,6 @@ This library contains extension functions to make your programming easier.
 26. DeepCopyJSON
 27. Clone
 28. SerializeObjectToXMLString
+29. SplitToStringArray
+30. RemoveSpecialCharacters
+31. RemoveWhitespaces
