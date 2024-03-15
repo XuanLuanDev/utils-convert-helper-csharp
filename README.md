@@ -32,3 +32,6 @@ This library contains extension functions to make your programming easier.
 29. SplitToStringArray
 30. RemoveSpecialCharacters
 31. RemoveWhitespaces
+32. CapitalizeFirstLetter
+33. LowcaseFirstLetter
+34. ConvertImageToBase64String

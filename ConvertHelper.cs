@@ -467,5 +467,45 @@ namespace Utils.ConvertHelper
         {
             return Regex.Replace(source, @"\s", string.Empty);
         }
+
+        /// <summary>
+        /// Capitalize first letter
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string CapitalizeFirstLetter(this string source)
+        {
+            if (String.IsNullOrEmpty(source))
+                return source;
+            if (source.Length == 1)
+                return source.ToUpper();
+            return source.Remove(1).ToUpper() + source.Substring(1);
+        }
+
+        /// <summary>
+        /// Lowcase first letter
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string LowcaseFirstLetter(this string source)
+        {
+            if (String.IsNullOrEmpty(source))
+                return source;
+            if (source.Length == 1)
+                return source.ToLower();
+            return source.Remove(1).ToLower() + source.Substring(1);
+        }
+
+        /// <summary>
+        /// Convert image to base 64 string
+        /// </summary>
+        /// <param name="imagePath"></param>
+        /// <returns></returns>
+        public static string ConvertImageToBase64String(this string imagePath)
+        {
+            byte[] imageBytes = File.ReadAllBytes(imagePath);
+            string base64String = Convert.ToBase64String(imageBytes);
+            return base64String;
+        }
     }
 }
