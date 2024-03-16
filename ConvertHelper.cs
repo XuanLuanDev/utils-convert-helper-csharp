@@ -507,5 +507,28 @@ namespace Utils.ConvertHelper
             string base64String = Convert.ToBase64String(imageBytes);
             return base64String;
         }
+
+        /// <summary>
+        /// Reverse string
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string Reverse(this string source)
+        {
+            char[] chars = source.ToCharArray();
+            Array.Reverse(chars);
+            return new string(chars);
+        }
+
+        /// <summary>
+        /// Get property value of object by property name
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="propName"></param>
+        /// <returns></returns>
+        public static object GetPropValue(this object source, string propName)
+        {
+            return source.GetType().GetProperty(propName).GetValue(source, null);
+        }
     }
 }

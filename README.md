@@ -35,3 +35,10 @@ This library contains extension functions to make your programming easier.
 32. CapitalizeFirstLetter
 33. LowcaseFirstLetter
 34. ConvertImageToBase64String
+35. Reverse
+36. WhereEven
+37. WhereOdd
+38. Median
+39. Page
+40. WhereIn
+41. GetPropValue
