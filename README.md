@@ -42,3 +42,7 @@ This library contains extension functions to make your programming easier.
 39. Page
 40. WhereIn
 41. GetPropValue
+42. Shuffle
+43. JoinStringArray
+44. DistinctBy
+45. WordCount

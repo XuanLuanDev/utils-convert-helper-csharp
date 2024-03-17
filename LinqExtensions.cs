@@ -107,5 +107,42 @@ namespace Utils.ConvertHelper
                 }
             }
         }
+
+        /// <summary>
+        /// Shuffle data
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
+        {
+            return source?.OrderBy(x => Guid.NewGuid());
+        }
+
+        /// <summary>
+        /// Join string
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
+        public static string JoinStringArray(this IEnumerable<string> source, string separator)
+        {
+            if (source == null)
+                return null;
+
+            return string.Join(separator, source);
+        }
+
+        /// <summary>
+        /// Distinct by a property name
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="items"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> items, Func<T, TKey> property)
+        {
+            return items.GroupBy(property).Select(x => x.First());
+        }
     }
 }

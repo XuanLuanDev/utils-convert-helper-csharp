@@ -530,5 +530,18 @@ namespace Utils.ConvertHelper
         {
             return source.GetType().GetProperty(propName).GetValue(source, null);
         }
+
+        /// <summary>
+        /// Get Word count
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static int WordCount(this string source)
+        {
+            List<char> seprateWords =new List<char>() { ' ','.','?'};
+            if (!String.IsNullOrEmpty(source))
+                return source.Split(seprateWords.ToArray(),StringSplitOptions.RemoveEmptyEntries).Length;
+            return 0;
+        }
     }
 }
