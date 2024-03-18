@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -160,40 +161,7 @@ namespace Utils.ConvertHelper
         /// <returns></returns>
         public static bool IsValidUrl(this string input)
         {
-            Regex regex = new Regex("/^http(s)?:\\/\\/([\\w-]+\\.)+[\\w-]+(\\/[\\w-.\\/?%&=]*)?/");
-            return regex.IsMatch(input);
-        }
-
-        /// <summary>
-        /// Check Is Only Kanji
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static bool IsOnlyKanji(this string input)
-        {
-            Regex regex = new Regex("/^[一-龥]+$/");
-            return regex.IsMatch(input);
-        }
-
-        /// <summary>
-        /// Check Is Only Hiragana FullWidth
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static bool IsOnlyHiraganaFullWidth(this string input)
-        {
-            Regex regex = new Regex("/^[ぁ-ん]+$/");
-            return regex.IsMatch(input);
-        }
-
-        /// <summary>
-        /// Check Is Only Katakana FullWidth
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static bool IsOnlyKatakanaFullWidth(this string input)
-        {
-            Regex regex = new Regex("/^([ァ-ン]|ー)+$/");
+            Regex regex = new Regex("^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)$");
             return regex.IsMatch(input);
         }
 
@@ -204,7 +172,7 @@ namespace Utils.ConvertHelper
         /// <returns></returns>
         public static bool IsValidEmail(this string input)
         {
-            Regex regex = new Regex("/^\\S+@\\S+\\.\\S+$/");
+            Regex regex = new Regex(@"\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*");
             return regex.IsMatch(input);
         }
 
@@ -542,6 +510,102 @@ namespace Utils.ConvertHelper
             if (!String.IsNullOrEmpty(source))
                 return source.Split(seprateWords.ToArray(),StringSplitOptions.RemoveEmptyEntries).Length;
             return 0;
+        }
+
+        /// <summary>
+        /// Check is unicode
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsUnicode(this string source)
+        {
+            return Encoding.ASCII.GetByteCount(source) != Encoding.UTF8.GetByteCount(source);
+        }
+
+        /// <summary>
+        /// To dictionary
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> ToDictionary<T>(this T obj)
+        {
+            Dictionary<string, string> dict = obj.GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .ToDictionary(
+                    prop => prop.Name,
+                    prop => (prop.GetValue(obj, null) == null)
+                           ? null
+                           : prop.GetValue(obj, null).ToString());
+            return dict;
+        }
+
+        /// <summary>
+        /// SHA1
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string SHA1(this string source)
+        {
+            SHA1Managed sha1 = new SHA1Managed();
+            byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(source));
+            StringBuilder hashSb = new StringBuilder();
+            foreach (byte b in hash)
+            {
+                hashSb.Append(b.ToString("x2"));
+            }
+            return hashSb.ToString();
+        }
+
+        /// <summary>
+        /// SHA256
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string SHA256(this string source)
+        {
+            SHA256Managed sha256 = new SHA256Managed();
+            StringBuilder hashSb = new StringBuilder();
+            byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(source));
+            foreach (byte b in hash)
+            {
+                hashSb.Append(b.ToString("x2"));
+            }
+            return hashSb.ToString();
+        }
+
+        /// <summary>
+        /// SHA384
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string SHA384(this string source)
+        {
+            SHA384Managed sha384 = new SHA384Managed();
+            StringBuilder hashSb = new StringBuilder();
+            byte[] hash = sha384.ComputeHash(Encoding.UTF8.GetBytes(source));
+            foreach (byte b in hash)
+            {
+                hashSb.Append(b.ToString("x2"));
+            }
+            return hashSb.ToString();
+        }
+
+        /// <summary>
+        /// SHA512
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string SHA512(this string source)
+        {
+            SHA512Managed sha512 = new SHA512Managed();
+            StringBuilder hashSb = new StringBuilder();
+            byte[] hash = sha512.ComputeHash(Encoding.UTF8.GetBytes(source));
+            foreach (byte b in hash)
+            {
+                hashSb.Append(b.ToString("x2"));
+            }
+            return hashSb.ToString();
         }
     }
 }
